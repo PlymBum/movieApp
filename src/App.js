@@ -1,10 +1,17 @@
+import React from 'react'
+import { Layout } from 'antd'
+
 import MovieList from './MoviesList'
+
+const { Header, Footer } = Layout
 
 function App() {
   return (
-    <main>
+    <Layout>
+      <Header>header</Header>
       <MovieList />
-    </main>
+      <Footer>footer</Footer>
+    </Layout>
   )
 }
 
