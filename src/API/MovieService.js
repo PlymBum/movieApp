@@ -13,11 +13,15 @@ class MovieService {
   getResource = async (url) => {
     const responce = await fetch(this._apiBase + url, this._getOptions)
     const body = await responce.json()
-    return body.results
+    if (body.success === false) {
+      throw new Error(body.status_message)
+    } else {
+      return body.results
+    }
   }
 
-  async getByKeyword(keyword) {
-    return this.getResource(`search/movie?query=${keyword}&language=en-US&page=1`)
+  async getByKeyword(keyword, page) {
+    return this.getResource(`search/movie?query=${keyword}&language=en-US&page=${page}`)
   }
 
   getMovie(id) {

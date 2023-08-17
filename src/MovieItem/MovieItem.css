@@ -1,28 +1,26 @@
-.movie__item > div{
-    display: flex;
-    flex-direction: row;
+.movie__item > div {
+  display: flex;
+  flex-direction: row;
 }
-.movie__poster{
-    margin-right: 30px;
-    margin-top: 10px;
-    margin-bottom: auto;
+.movie__poster {
+  margin-right: 30px;
+  margin-top: 10px;
+  margin-bottom: auto;
 }
-.movie__info{
-    /* float: right; */
+.movie__info {
+  /* float: right; */
 }
-.movie__title{
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 0;
+.movie__title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 0;
 }
-.movie__release-date{
-    font-size: 12px;
-    color: #827E7E;
+.movie__release-date {
+  font-size: 12px;
+  color: #827e7e;
 }
-.movie__tags{
-
+.movie__tags {
 }
-.movie__description{
-margin-top: 30px;
-
+.movie__description {
+  margin-top: 30px;
 }
