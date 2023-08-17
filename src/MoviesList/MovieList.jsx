@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Layout, Spin } from 'antd'
+import { Offline, Online } from 'react-detect-offline'
 
 import MovieItem from '../MovieItem'
 import MovieService from '../API/MovieService'
 import ErrorComponent from '../ErrorComponent'
-
 import './MovieList.css'
+import OflineCoponent from '../OflineComponent'
 
 const { Content } = Layout
 export default class MovieList extends Component {
@@ -67,11 +68,16 @@ export default class MovieList extends Component {
 
     return (
       <Layout>
-        <Content className="main__content">
-          {spinComponent}
-          {filmsComponent}
-          {errorComponent}
-        </Content>
+        <Online>
+          <Content className="main__content">
+            {spinComponent}
+            {filmsComponent}
+            {errorComponent}
+          </Content>
+        </Online>
+        <Offline>
+          <OflineCoponent />
+        </Offline>
       </Layout>
     )
   }
