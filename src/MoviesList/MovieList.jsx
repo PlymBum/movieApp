@@ -51,7 +51,7 @@ function MovieList({ isLoading, onError, errorMessage, items, guestSessionId, pa
     : null
   return (
     <Layout>
-      <Online polling={polling}>
+      <Online className="wrapper" polling={polling}>
         <Content className="main__content">
           {spinComponent}
           {spinComponent}
