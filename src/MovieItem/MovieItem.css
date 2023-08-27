@@ -1,19 +1,49 @@
-.movie__item > div {
+.movie__item{
+  margin-right: auto;
+  margin-left: auto;
+  width: 450px;
+}
+.ant-card-body {
   display: flex;
   flex-direction: row;
 }
 .movie__poster {
-  margin-right: 30px;
+  margin-right: 20px;
   margin-top: 10px;
   margin-bottom: auto;
+  width: 183px;
+  height: 279px;
 }
 .movie__info {
-  /* float: right; */
+  flex-direction: column;
+  justify-content: start;
+  height: 279px;
+}
+.movie__header{
+  display: flex;
+}
+.movie__averageRate{
+  align-self: center;  width: 34px;
+  height: 34px;
+  font-size: 12px;
+  line-height: 22px;
+  /* border: 2px solid; */
+  border-radius: 50%;
+  padding-top: 3px;
+  margin-left: auto;
+  margin-right: 10px;
+  text-align: center;
 }
 .movie__title {
   font-size: 20px;
   font-weight: 600;
+  margin-top: 10px;
   margin-bottom: 0;
+  width: 150px;
+  white-space:nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  position: relative;
 }
 .movie__release-date {
   font-size: 12px;
@@ -23,4 +53,30 @@
 }
 .movie__description {
   margin-top: 30px;
+  height: 140px;
+}
+.rate{
+}
+
+@media (max-width: 1400px){
+  .ant-card-body {
+    padding: 10px !important;
+  }
+  .movie__item{
+    width: 387px;
+    height: 245px;
+  }
+  .movie__poster {
+    margin-left: 0;
+    width: 60px;
+    height: 91px;
+  }
+  .movie__description {
+    margin-top: 20px;
+    height: 92px;
+    margin-left: -80px;
+  }
+  .rate{
+    text-align: end;
+  }
 }

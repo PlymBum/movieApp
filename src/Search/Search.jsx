@@ -1,24 +1,28 @@
 import React, { Component } from 'react'
 import { Input } from 'antd'
+import './Search.css'
 
 export default class Search extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      searchValue: '',
-    }
+    this.state = {}
   }
 
   setSearchValue = (e) => {
-    console.log(e.target.value)
-    this.setState({
-      searchValue: e.target.value,
-    })
+    const { setSerchedMovie } = this.props
+    setSerchedMovie(e.target.value)
   }
 
   render() {
-    const { searchValue } = this.state
+    const { searchedMovie } = this.props
     const { setSearchValue } = this
-    return <Input placeholder="Введите название фильма для поиска..." value={searchValue} onChange={setSearchValue} />
+    return (
+      <Input
+        className="search__input"
+        placeholder="Введите название фильма для поиска..."
+        value={searchedMovie}
+        onChange={setSearchValue}
+      />
+    )
   }
 }

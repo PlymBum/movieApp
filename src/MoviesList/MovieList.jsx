@@ -1,84 +1,69 @@
-import React, { Component } from 'react'
-import { Layout, Spin } from 'antd'
+import React from 'react'
+import { Layout } from 'antd'
 import { Offline, Online } from 'react-detect-offline'
 
 import MovieItem from '../MovieItem'
-import MovieService from '../API/MovieService'
 import ErrorComponent from '../ErrorComponent'
+import PaginationComponent from '../Pagination'
 import './MovieList.css'
 import OflineCoponent from '../OflineComponent'
+import Spiner from '../Spiner'
+import { GenreConsumer } from '../GenreContext'
 
 const { Content } = Layout
-export default class MovieList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isLoading: true,
-      onError: false,
-      items: [],
-      errorMessage: '',
-    }
+function MovieList({ isLoading, onError, errorMessage, items, guestSessionId, page, totalPage, setCurrentPage }) {
+  const polling = {
+    enabled: true,
+    interval: 5000,
+    timeout: 55555000,
+    url: '8.8.8.8',
   }
 
-  componentDidMount() {
-    const movieService = new MovieService()
-    movieService
-      .getByKeyword('return', 1)
-      .then((res) => {
-        this.setState({
-          isLoading: false,
-          onError: false,
-          items: res,
-        })
+  const itemLoaded = !(isLoading || onError)
+
+  const spinComponent = isLoading ? <Spiner /> : null
+
+  const errorComponent = onError ? <ErrorComponent message={errorMessage} /> : null
+  const filmsComponent = itemLoaded
+    ? items.map((item) => {
+        return (
+          <GenreConsumer key={item.id}>
+            {(genreList) => {
+              return (
+                <MovieItem
+                  img={item.poster_path}
+                  title={item.title}
+                  date={item.release_date}
+                  description={item.overview}
+                  posterPath={item.poster_path}
+                  id={item.id}
+                  guestSessionId={guestSessionId}
+                  rating={item.rating}
+                  voteAverage={item.vote_average}
+                  genreList={genreList}
+                  genreIds={item.genre_ids}
+                />
+              )
+            }}
+          </GenreConsumer>
+        )
       })
-      .catch(this.onError)
-  }
-
-  onError = (error) => {
-    this.setState({
-      onError: true,
-      isLoading: false,
-      errorMessage: error.message,
-    })
-  }
-
-  render() {
-    const { state } = this
-    const { isLoading, onError, errorMessage } = state
-
-    const itemLoaded = !(isLoading || onError)
-
-    const spinComponent = isLoading ? <Spin className="main__spiner" size="large" /> : null
-
-    const errorComponent = onError ? <ErrorComponent message={errorMessage} /> : null
-
-    const filmsComponent = itemLoaded
-      ? state.items.map((item) => {
-          return (
-            <MovieItem
-              key={item.id}
-              img={item.poster_path}
-              title={item.title}
-              date={item.release_date}
-              description={item.overview}
-            />
-          )
-        })
-      : null
-
-    return (
-      <Layout>
-        <Online>
-          <Content className="main__content">
-            {spinComponent}
-            {filmsComponent}
-            {errorComponent}
-          </Content>
-        </Online>
-        <Offline>
-          <OflineCoponent />
-        </Offline>
-      </Layout>
-    )
-  }
+    : null
+  return (
+    <Layout>
+      <Online polling={polling}>
+        <Content className="main__content">
+          {spinComponent}
+          {spinComponent}
+          {filmsComponent}
+          {errorComponent}
+        </Content>
+        <PaginationComponent currentPage={page} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+      </Online>
+      <Offline polling={polling}>
+        <OflineCoponent />
+      </Offline>
+    </Layout>
+  )
 }
+export default MovieList

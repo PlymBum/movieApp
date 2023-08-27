@@ -1,0 +1,10 @@
+.notFound{
+    text-align: center;
+    height: 100vh;
+    vertical-align: middle;
+    color: #000;
+    font-family: Inter UI;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 400;
+}

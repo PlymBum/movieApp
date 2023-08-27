@@ -1,0 +1,201 @@
+import React, { Component } from 'react'
+import { Layout } from 'antd'
+import { debounce } from 'lodash'
+
+import MovieList from './MoviesList'
+import MovieService from './API/MovieService'
+import Search from './Search/Search'
+import PaginationComponent from './Pagination'
+import Header from './Header'
+import './index.css'
+
+export default class App extends Component {
+  searcheMovie = debounce(() => this.updateMovieList(), 3000)
+
+  constructor(props) {
+    super(props)
+    // this.state = {
+    //   isLoading: true,
+    //   onError: false,
+    //   items: [],
+    //   errorMessage: '',
+    //   searchedMovie: '',
+    //   currentPage: 1,
+    //   totalPage: 1,
+    //   currentSearch: '',
+    //   tranding: true,
+    //   guestSessionId: '',
+    //   isRatedPage: false,
+    //   ratedItems: [],
+    //   ratedTotalPage: 1,
+    //   ratedCurrentPage: 1,
+    // }
+    this.state = {
+      isLoading: true,
+      onError: false,
+      errorMessage: '',
+      isTranding: true,
+      guestSessionId: '',
+      searchedMovie: '',
+      currentSearch: 'return',
+      isRatedPage: false,
+      searchPage: {
+        items: [],
+        currentPage: 1,
+        totalPage: 1,
+      },
+      ratedPage: {
+        items: [],
+        currentPage: 1,
+        totalPage: 1,
+      },
+    }
+  }
+
+  componentDidMount() {
+    const movieService = new MovieService()
+    movieService.createGuestSession().then((id) => {
+      this.setState({
+        guestSessionId: id,
+      })
+    })
+    this.updateMovieList()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchPage.currentPage !== this.state.searchPage.currentPage) {
+      alert('AAAAAAAAAAAA')
+      this.updateMovieList()
+    }
+    // console.log(prevState, this.state)
+    const { searchedMovie, searchPage, isRatedPage } = this.state
+    if (prevState.searchedMovie !== searchedMovie && searchedMovie !== '') {
+      this.searcheMovie()
+    }
+    // if (prevState.searchPage.currentPage !== searchPage.currentPage) {
+    //   console.log('error')
+    //   this.searcheMovie()
+    // }
+    // if (prevState.isRatedPage !== isRatedPage) {
+    //   if (isRatedPage) {
+    //     this.getRated()
+    //   } else {
+    //     this.updateMovieList()
+    //   }
+    // }
+  }
+
+  onError = (error) => {
+    this.setState({
+      onError: true,
+      isLoading: false,
+      errorMessage: error.message,
+    })
+  }
+
+  setSerchedMovie = (searchInput) => {
+    this.setState({
+      searchedMovie: searchInput,
+      currentSearch: searchInput,
+    })
+  }
+
+  setCurrentPage = (page) => {
+    // const { isRatedPage } = this.state
+    // const paramState = isRatedPage ? 'reatedPage' : 'searchPage'
+    console.log(this.state, 'currentPage')
+    this.setState({
+      searchPage: {
+        currentPage: page,
+      },
+    })
+  }
+
+  updateMovieList = () => {
+    this.setState({
+      isLoading: true,
+    })
+    const { currentSearch, searchPage } = this.state
+    const movieService = new MovieService()
+    movieService
+      .getByKeyword(currentSearch, searchPage.currentPage)
+      .then((body) => {
+        console.log('BODY', body)
+        this.setState({
+          searchPage: {
+            items: body.results,
+            currentPage: body.page,
+            totalPage: body.total_pages,
+          },
+          isLoading: false,
+          onError: false,
+          searchedMovie: '',
+        })
+      })
+      .catch(this.onError)
+  }
+
+  getRated = () => {
+    const { guestSessionId, searchPage } = this.state
+    const movieService = new MovieService()
+    movieService
+      .getRatedMovies(guestSessionId, searchPage.currentPage)
+      .then((body) => {
+        console.log(this.state)
+        // this.setPagination(body.page, body.total_pages)
+        this.setState({
+          isLoading: false,
+          onError: false,
+          // isTranding: false,
+          ratedPage: {
+            items: body.results,
+            totalPage: body.total_pages,
+            currentPage: body.page,
+          },
+        })
+      })
+      .catch(this.onError)
+  }
+
+  toogleTabs = (bool) => {
+    this.setState({
+      isRatedPage: bool,
+    })
+  }
+
+  render() {
+    const { ratedPage, searchPage, isRatedPage, searchedMovie, isLoading, onError, errorMessage, guestSessionId } =
+      this.state
+    const { setSerchedMovie, setCurrentPage, toogleTabs } = this
+    const { items } = searchPage
+    const searchComponent = isRatedPage ? null : (
+      <Search setSerchedMovie={setSerchedMovie} searchedMovie={searchedMovie} />
+    )
+
+    return (
+      <Layout>
+        <Header toogleTabs={toogleTabs} />
+        {searchComponent}
+        {/* <MovieList
+          items={isRatedPage ? ratedPage.items : searchPage.items}
+          isLoading={isLoading}
+          onError={onError}
+          errorMessage={errorMessage}
+          guestSessionId={guestSessionId}
+        /> */}
+        <MovieList
+          items={items}
+          isLoading={isLoading}
+          onError={onError}
+          errorMessage={errorMessage}
+          guestSessionId={guestSessionId}
+        />
+        <PaginationComponent
+          currentPage={searchPage.currentPage}
+          totalPage={searchPage.totalPage}
+          setCurrentPage={setCurrentPage}
+        />
+      </Layout>
+    )
+  }
+}
