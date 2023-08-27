@@ -39,10 +39,10 @@ function MovieItem({
     }
     return 'no data'
   }
-  // const defaultPoster = (e) => {  This prod
-  //   e.target.onError = null
-  //   e.target.src = posterDefault
-  // }
+  const defaultPoster = (e) => {
+    e.target.onError = null
+    e.target.src = posterDefault
+  }
 
   const checkRate = (filmId) => {
     return +localStorage.getItem(filmId) || 0
@@ -69,8 +69,8 @@ function MovieItem({
 
   return (
     <Card className="movie__item">
-      {/* <img className="movie__poster" src={posterUrl + posterPath} alt="posterFilm" onError={defaultPoster} /> This prod  */}
-      <img className="movie__poster" src={posterDefault} alt="posterFilm" /> {/* This dev  */}
+      <img className="movie__poster" src={posterUrl + posterPath} alt="posterFilm" onError={defaultPoster} />
+      {/* <img className="movie__poster" src={posterDefault} alt="posterFilm" /> This dev  */}
       <div className="movie__info">
         <div className="movie__header">
           <h2 className="movie__title">{title}</h2>
